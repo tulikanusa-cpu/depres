@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%A9%BA%3C/text%3E%3C/svg%3E">
+<title>ระบบคัดกรองภาวะซึมเศร้า 2Q · 9Q · 8Q</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#eef5ff;--ink:#10264d;--mut:#5b6f94;--card:#fff;--p:#1d4ed8;--p2:#0ea5e9;--soft:#e0ecff;--line:#d3e2fb;--r:#ef4444}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1830;--ink:#eaf1ff;--mut:#9db3dd;--card:#162545;--soft:#1f3566;--line:#2a447c;--p:#60a5fa}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.6}
+.top{max-width:900px;margin:auto;padding:16px 14px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-size:2rem;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(29,78,216,.3)}
+.top h1{margin:0;font-size:1.3rem;line-height:1.2}.top h1 span{color:var(--p2)}.top p{margin:0;color:var(--mut);font-size:.9rem}
+.tb{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.pillb{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:8px 16px;font:inherit;font-weight:700;cursor:pointer}
+.pillb.main{background:var(--p);border-color:var(--p);color:#fff}
+nav{max-width:872px;margin:14px auto 0;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:8px;display:flex;gap:6px;overflow-x:auto}
+nav button{flex:none;border:0;background:none;color:var(--mut);font:inherit;font-weight:700;padding:10px 18px;border-radius:14px;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--soft);color:var(--p)}
+main{max-width:900px;margin:auto;padding:18px 14px 60px}
+h2{margin:0 0 4px;font-size:1.25rem;color:var(--p)}.sub{color:var(--mut);margin:0 0 14px;font-size:.95rem}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:18px;margin-bottom:16px}
+.hero{background:linear-gradient(130deg,var(--p),var(--p2));color:#fff;border-radius:26px;padding:26px 20px;margin-bottom:16px}
+.hero h2{color:#fff;font-size:1.6rem}.hero p{margin:6px 0 16px;opacity:.95}
+.hero .pillb{border:0;color:var(--p)}
+.steps{display:flex;gap:6px;margin-bottom:14px}.steps span{flex:1;text-align:center;font-size:.82rem;padding:5px;border-radius:99px;background:var(--soft);color:var(--mut)}
+.steps span.on{background:var(--p);color:#fff;font-weight:700}.steps span.done{background:var(--p2);color:#fff}
+label.f{display:block;font-weight:500;margin-bottom:10px}
+input[type=text],input[type=number],input[type=tel],input[type=password],select,textarea{width:100%;padding:11px 12px;font:inherit;border:2px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);margin-top:3px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid var(--p2);outline-offset:1px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.q{padding:14px 0;border-top:1px dashed var(--line)}.q .tx{margin-bottom:10px;font-weight:500}.q .tm{font-size:.82rem;color:var(--mut)}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{display:flex;flex-direction:column;align-items:center;width:calc(25% - 6px);min-width:64px;cursor:pointer;background:none;border:0;font:inherit;color:var(--ink);padding:0}
+.opt .c{width:54px;height:54px;border-radius:50%;border:3px solid var(--cc);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:var(--cc);transition:.15s}
+.opt.on .c{background:var(--cc);color:#fff;transform:scale(1.12)}
+.opt small{font-size:.75rem;text-align:center;margin-top:5px;color:var(--mut);line-height:1.2}
+.opts.two .opt{width:auto;min-width:90px}.opts.two .c{width:62px;height:62px;font-size:1rem}
+.btn{display:block;width:100%;padding:14px;border:0;border-radius:16px;font:inherit;font-weight:700;font-size:1.05rem;color:#fff;background:linear-gradient(90deg,var(--p),var(--p2));cursor:pointer;margin-top:10px}
+.btn.sec{background:var(--soft);color:var(--p)}
+.err{color:var(--r);font-weight:500;margin-top:8px;min-height:1.2em}
+.res{text-align:center}.score{font-size:3.2rem;font-weight:700;line-height:1}
+.pill{display:inline-block;padding:6px 16px;border-radius:99px;color:#fff;font-weight:700;margin:8px 0}
+.alert{background:#fee2e2;color:#991b1b;border:2px solid var(--r);border-radius:14px;padding:12px;margin-top:12px;font-weight:700}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px}
+.kpi span{color:var(--mut)}.kpi b{display:block;font-size:2.2rem;line-height:1.2;margin-top:6px}.kpi small{color:var(--mut)}
+.cv{position:relative;height:300px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.9rem}
+th{background:var(--soft);color:var(--p);text-align:left}th,td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.bar{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.hide{display:none!important}.note{font-size:.85rem;color:var(--mut)}
+ol.ref{padding-left:20px;font-size:.92rem;margin:6px 0}ol.ref li{margin-bottom:8px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.opt .c{width:48px;height:48px}.tb{margin-left:0;width:100%}.tb .pillb{flex:1}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">+</div>
+  <div><h1>DEPRESSION <span>/ 2Q · 9Q · 8Q</span></h1><p>ระบบคัดกรองภาวะซึมเศร้าและความเสี่ยงฆ่าตัวตาย</p></div>
+  <div class="tb"><button class="pillb" id="lgBtn" onclick="tab('H')">เข้าสู่ระบบ</button><button class="pillb main" onclick="newAssess()">+ ประเมินรายใหม่</button></div>
+</div>
+<nav>
+  <button id="tH" class="on" onclick="tab('H')">หน้าแรก</button>
+  <button id="tA" onclick="newAssess()">แบบประเมิน</button>
+  <button id="tD" onclick="tab('D')">Dashboard</button>
+  <button id="tL" class="hide" onclick="tab('L')">รายชื่อ/ความคิดเห็น</button>
+  <button id="tC" onclick="tab('C')">ปรึกษาผู้เชี่ยวชาญ</button>
+  <button id="tR" onclick="tab('R')">อ้างอิง</button>
+</nav>
+<main>
+<!-- หน้าแรก -->
+<section id="H">
+  <div class="hero"><h2>คัดกรองภาวะซึมเศร้า</h2><p>ทำตามลำดับ 2Q → 9Q → 8Q ใช้เวลาไม่กี่นาที ผลแสดงทันที</p><button class="pillb" onclick="newAssess()">เริ่มทำแบบประเมิน</button> <button class="pillb" onclick="tab('D')" style="background:rgba(255,255,255,.2);color:#fff">ดู Dashboard</button></div>
+  <div class="card" id="loginCard">
+    <h2>เข้าสู่ระบบผู้ดูแล</h2><p class="sub">สำหรับดูรายชื่อ ความคิดเห็น และส่งออก Excel</p>
+    <label class="f">ชื่อผู้ใช้<input type="text" id="lu" autocomplete="off" autocapitalize="none"></label>
+    <label class="f">รหัสผ่าน<input type="password" id="lp" autocomplete="off"></label>
+    <div class="err" id="le"></div><button class="btn" onclick="login()">เข้าสู่ระบบ</button>
+  </div>
+  <div class="card hide" id="adminCard"><h2>เข้าสู่ระบบแล้ว</h2><p class="sub">คุณเป็นผู้ดูแลระบบ</p><button class="btn" onclick="tab('L')">ดูรายชื่อและความคิดเห็น</button><button class="btn sec" onclick="logout()">ออกจากระบบ</button></div>
+</section>
+
+<!-- ทำแบบประเมิน -->
+<section id="A" class="hide">
+  <div class="steps" id="steps"><span>ข้อมูล</span><span>2Q</span><span>9Q</span><span>8Q</span></div>
+  <div class="card" id="s0">
+    <h2>ข้อมูลผู้ตอบ</h2><p class="sub">กรอกข้อมูลให้ครบทุกช่อง</p>
+    <label class="f">ชื่อ-นามสกุล<input type="text" id="name" autocomplete="name"></label>
+    <div class="grid">
+      <label class="f">อายุ (ปี)<input type="number" id="age" min="1" max="120" inputmode="numeric"></label>
+      <label class="f">เพศ<select id="gender"><option value="">เลือก</option><option>ชาย</option><option>หญิง</option><option>อื่น ๆ</option></select></label>
+      <label class="f">อาชีพ<input type="text" id="job"></label>
+      <label class="f">เบอร์โทร<input type="tel" id="phone" inputmode="tel" maxlength="12"></label>
+    </div>
+    <div class="err" id="e0"></div><button class="btn" onclick="next0()">เริ่มทำแบบคัดกรอง 2Q</button>
+  </div>
+  <div class="card hide" id="s2"><h2>แบบคัดกรองโรคซึมเศร้า 2 คำถาม (2Q)</h2><p class="sub">ใน 2 สัปดาห์ที่ผ่านมา รวมวันนี้</p><div id="q2"></div><div class="err" id="e2"></div><button class="btn" onclick="next2()">ถัดไป</button></div>
+  <div class="card hide" id="s9"><h2>แบบประเมินโรคซึมเศร้า 9 คำถาม (9Q)</h2><p class="sub">ในช่วง 2 สัปดาห์ที่ผ่านมารวมทั้งวันนี้ ท่านมีอาการเหล่านี้บ่อยแค่ไหน</p><div id="q9"></div><div class="err" id="e9"></div><button class="btn" onclick="next9()">ถัดไป</button></div>
+  <div class="card hide" id="s8"><h2>แบบประเมินการฆ่าตัวตาย 8 คำถาม (8Q)</h2><p class="sub">เลือกวงกลมที่ตรงกับท่านที่สุด (ตัวเลขในวงกลมคือคะแนน)</p><div id="q8"></div><div class="err" id="e8"></div><button class="btn" onclick="next8()">บันทึกแบบประเมิน</button></div>
+  <div class="card hide res" id="sr"></div>
+</section>
+
+<!-- Dashboard -->
+<section id="D" class="hide">
+  <h2 style="font-size:1.6rem;color:var(--ink)">Dashboard Overview</h2>
+  <p class="sub"><span id="src"></span> <a href="#" onclick="renderDash();return false" style="color:var(--p);font-weight:700">รีเฟรช</a></p>
+  <div class="kpis" id="kpis"></div>
+  <div class="card"><h2>ค่าเฉลี่ยรายข้อ 9Q (0–3)</h2><p class="sub">แท่งสุดท้ายคือภาพรวม เฉลี่ยจากทุกข้อ</p><div class="cv" style="height:380px"><canvas id="c1"></canvas></div></div>
+  <div class="grid">
+    <div class="card"><h2>เพศผู้ตอบ</h2><div class="cv"><canvas id="c2"></canvas></div></div>
+    <div class="card"><h2>ระดับซึมเศร้า (9Q)</h2><div class="cv"><canvas id="c3"></canvas></div></div>
+  </div>
+  <div class="card"><h2>ระดับความเสี่ยงฆ่าตัวตาย (8Q)</h2><div class="cv"><canvas id="c4"></canvas></div></div>
+</section>
+
+<!-- รายชื่อ (admin) -->
+<section id="L" class="hide">
+  <div class="bar"><div><h2>รายชื่อและความคิดเห็น</h2><span class="note" id="src2"></span></div><button class="pillb main" onclick="exportXlsx()">ส่งออก Excel</button></div>
+  <div class="card tw" id="tbl"></div>
+  <h2>ข้อความปรึกษาผู้เชี่ยวชาญ</h2><div class="card tw" id="tbl2"></div>
+</section>
+
+<!-- ปรึกษาผู้เชี่ยวชาญ -->
+<section id="C" class="hide">
+  <div class="card"><h2>ปรึกษาผู้เชี่ยวชาญ</h2><p class="sub">ช่องทางพูดคุยกับผู้เชี่ยวชาญด้านสุขภาพจิต</p>
+    <a class="btn" style="text-decoration:none;text-align:center" href="tel:1323">โทรสายด่วนสุขภาพจิต 1323 (24 ชม.)</a>
+    <a class="btn sec" style="text-decoration:none;text-align:center" href="tel:1669">เหตุฉุกเฉิน โทร 1669</a>
+    <a class="btn sec hide" id="lineBtn" style="text-decoration:none;text-align:center" target="_blank" rel="noopener">แชทผ่าน LINE กับผู้เชี่ยวชาญ</a>
+  </div>
+  <div class="card"><h2>ฝากข้อความถึงผู้เชี่ยวชาญ</h2><p class="sub">เจ้าหน้าที่จะติดต่อกลับตามช่องทางที่ท่านระบุ (ไม่ใช่การแชทสด)</p>
+    <label class="f">ชื่อ (ไม่ระบุได้)<input type="text" id="cn"></label>
+    <label class="f">เบอร์โทรหรือ LINE ID สำหรับติดต่อกลับ<input type="text" id="cc"></label>
+    <label class="f">ข้อความ<textarea id="cm" rows="4"></textarea></label>
+    <div class="err" id="ce"></div><button class="btn" onclick="sendConsult()">ส่งข้อความ</button>
+  </div>
+</section>
+
+<!-- อ้างอิง -->
+<section id="R" class="hide"><div class="card" id="refs"></div></section>
+</main>
+
+<script>
+/* ใส่ URL ของ Google Apps Script (Web app) เพื่อบันทึกลง Google Sheet/Excel อัตโนมัติ */
+const SCRIPT_URL='';
+const ADMIN={u:'admin',p:'1234'};
+
+const Q9=['เบื่อ ไม่สนใจอยากทำอะไร','ไม่สบายใจ ซึมเศร้า ท้อแท้','หลับยากหรือหลับ ๆ ตื่น ๆ หรือหลับมากไป','เหนื่อยง่ายหรือไม่ค่อยมีแรง','เบื่ออาหารหรือกินมากเกินไป','รู้สึกไม่ดีกับตัวเอง คิดว่าตัวเองล้มเหลวหรือครอบครัวผิดหวัง','สมาธิไม่ดี เวลาทำอะไร เช่น ดูโทรทัศน์ ฟังวิทยุ หรือทำงานที่ต้องใช้ความตั้งใจ','พูดช้า ทำอะไรช้าลงจนคนอื่นสังเกตเห็นได้ หรือกระสับกระส่ายไม่สามารถอยู่นิ่งได้เหมือนที่เคยเป็น','คิดทำร้ายตนเอง หรือคิดว่าถ้าตายไปคงจะดี'];
+const O9=[['ไม่มีเลย','#22c55e'],['เป็นบางวัน 1–7 วัน','#eab308'],['เป็นบ่อย > 7 วัน','#f97316'],['เป็นทุกวัน','#ef4444']];
+const Q8=[['คิดอยากตาย หรือ คิดว่าตายไปจะดีกว่า',1],['อยากทำร้ายตัวเอง หรือ ทำให้ตัวเองบาดเจ็บ',2],['คิดเกี่ยวกับการฆ่าตัวตาย',6],['มีแผนการที่จะฆ่าตัวตาย',8],['ได้เตรียมการที่จะทำร้ายตนเองหรือเตรียมการที่จะฆ่าตัวตายโดยตั้งใจว่าจะให้ตายจริง ๆ',9],['ได้ทำให้ตนเองบาดเจ็บแต่ไม่ตั้งใจที่จะทำให้เสียชีวิต',4],['ได้พยายามฆ่าตัวตายโดยคาดหวัง/ตั้งใจที่จะให้ตาย',10],['ท่านเคยพยายามฆ่าตัวตาย',4]];
+const REFS=['กรมสุขภาพจิต กระทรวงสาธารณสุข. แบบคัดกรองโรคซึมเศร้า 2 คำถาม (2Q) แบบประเมินโรคซึมเศร้า 9 คำถาม (9Q) และแบบประเมินการฆ่าตัวตาย 8 คำถาม (8Q).','Kroenke K, Spitzer RL, Williams JBW. The PHQ-9: validity of a brief depression severity measure. J Gen Intern Med. 2001;16(9):606–613.','Lotrakul M, Sumrithe S, Saipanish R. Reliability and validity of the Thai version of the PHQ-9. BMC Psychiatry. 2008;8:46.','สายด่วนสุขภาพจิต กรมสุขภาพจิต โทร 1323 (ตลอด 24 ชั่วโมง)'];
+const A={q2:[null,null],q9:Array(9).fill(null),q8:Array(8).fill(null),q8b:null,info:{}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let isAdmin=false;
+try{isAdmin=sessionStorage.getItem('adm')==='1'}catch(e){}
+
+const refHtml=()=>'<h2>เอกสารอ้างอิง</h2><ol class="ref">'+REFS.map(r=>`<li>${esc(r)}</li>`).join('')+'</ol>';
+$('refs').innerHTML=refHtml();
+
+function grp(key,i,opts,cls){return `<div class="opts ${cls||''}" data-k="${key}" data-i="${i}">`+opts.map(o=>`<button type="button" class="opt" style="--cc:${o.c}" data-v="${o.v}" onclick="pick(this)"><span class="c">${o.t}</span><small>${o.s}</small></button>`).join('')+'</div>'}
+function pick(el){const g=el.parentNode,k=g.dataset.k,i=+g.dataset.i,v=+el.dataset.v;
+  g.querySelectorAll('.opt').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  if(k==='q8b')A.q8b=v;else A[k][i]=v;
+  if(k==='q8'&&i===2){$('q8b').classList.toggle('hide',v!==6);
+    if(v!==6){A.q8b=null;$('q8b').querySelectorAll('.opt').forEach(b=>b.classList.remove('on'))}}}
+$('q2').innerHTML=['ใน 2 สัปดาห์ที่ผ่านมา รวมวันนี้ ท่านรู้สึก หดหู่ เศร้า หรือท้อแท้สิ้นหวัง หรือไม่','ใน 2 สัปดาห์ที่ผ่านมา รวมวันนี้ ท่านรู้สึก เบื่อ ทำอะไรก็ไม่เพลิดเพลิน หรือไม่']
+  .map((t,i)=>`<div class="q"><div class="tx">${i+1}. ${t}</div>${grp('q2',i,[{v:0,t:'ไม่มี',s:'',c:'#22c55e'},{v:1,t:'มี',s:'',c:'#ef4444'}],'two')}</div>`).join('');
+$('q9').innerHTML=Q9.map((t,i)=>`<div class="q"><div class="tx">${i+1}. ${t}</div>${grp('q9',i,O9.map((o,v)=>({v,t:v,s:o[0],c:o[1]})))}</div>`).join('');
+$('q8').innerHTML=Q8.map(([t,sc],i)=>{
+  let h=`<div class="q"><div class="tm">${i<7?'ในช่วง 1 เดือนที่ผ่านมา':'ตลอดชีวิตที่ผ่านมา'}</div><div class="tx">${i+1}. ${t}</div>${grp('q8',i,[{v:0,t:0,s:'ไม่มี',c:'#22c55e'},{v:sc,t:sc,s:'มี',c:'#ef4444'}],'two')}</div>`;
+  if(i===2)h+=`<div class="q hide" id="q8b"><div class="tx">ท่านสามารถควบคุมความอยากฆ่าตัวตายที่ท่านคิดอยู่นั้นได้หรือไม่ หรือบอกได้ไหมว่าจะไม่ทำตามความคิดนั้นในขณะนี้</div>${grp('q8b',0,[{v:0,t:0,s:'ได้',c:'#22c55e'},{v:8,t:8,s:'ไม่ได้',c:'#ef4444'}],'two')}</div>`;
+  return h}).join('');
+
+/* ===== นำทาง / Login ===== */
+function tab(x){if(x==='L'&&!isAdmin)x='H';
+  ['H','A','D','L','C','R'].forEach(k=>{$(k).classList.toggle('hide',k!==x);$('t'+k).classList.toggle('on',k===x)});
+  $('lgBtn').textContent=isAdmin?'ออกจากระบบ':'เข้าสู่ระบบ';$('lgBtn').onclick=isAdmin?logout:()=>tab('H');
+  $('tL').classList.toggle('hide',!isAdmin);$('loginCard').classList.toggle('hide',isAdmin);$('adminCard').classList.toggle('hide',!isAdmin);
+  if(x==='D')renderDash();if(x==='L')renderList();scrollTo({top:0})}
+function login(){if($('lu').value.trim()===ADMIN.u&&$('lp').value===ADMIN.p){isAdmin=true;try{sessionStorage.setItem('adm','1')}catch(e){}
+  $('lu').value=$('lp').value='';$('le').textContent='';tab('H')}else $('le').textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'}
+function logout(){isAdmin=false;try{sessionStorage.removeItem('adm')}catch(e){}tab('H')}
+function newAssess(){location.hash='';A.q2=[null,null];A.q9.fill(null);A.q8.fill(null);A.q8b=null;
+  document.querySelectorAll('.opt.on').forEach(b=>b.classList.remove('on'));$('q8b').classList.add('hide');
+  ['name','age','gender','job','phone'].forEach(k=>$(k).value='');tab('A');show('s0',0)}
+function show(id,step){['s0','s2','s9','s8','sr'].forEach(s=>$(s).classList.toggle('hide',s!==id));
+  [...$('steps').children].forEach((e,i)=>{e.className=i<step?'done':i===step?'on':''});scrollTo({top:0,behavior:'smooth'})}
+
+/* ===== ขั้นตอนประเมิน ===== */
+function next0(){const g=k=>$(k).value.trim();
+  const d={name:g('name'),age:g('age'),gender:g('gender'),job:g('job'),phone:g('phone')};
+  if(Object.values(d).some(v=>!v)){$('e0').textContent='กรุณากรอกข้อมูลให้ครบทุกช่อง';return}
+  if(!/^[0-9\-\s]{9,12}$/.test(d.phone)){$('e0').textContent='เบอร์โทรไม่ถูกต้อง (ตัวเลข 9–10 หลัก)';return}
+  $('e0').textContent='';A.info=d;show('s2',1)}
+function next2(){if(A.q2.includes(null)){$('e2').textContent='กรุณาตอบให้ครบทั้ง 2 ข้อ';return}
+  $('e2').textContent='';A.q2.some(v=>v===1)?show('s9',2):finish()}
+function next9(){if(A.q9.includes(null)){$('e9').textContent='กรุณาตอบให้ครบทั้ง 9 ข้อ';return}
+  $('e9').textContent='';t9()>=7?show('s8',3):finish()}
+function next8(){if(A.q8.includes(null)||(A.q8[2]===6&&A.q8b===null)){$('e8').textContent='กรุณาตอบให้ครบทุกข้อ';return}
+  $('e8').textContent='';finish()}
+const t9=()=>A.q9.reduce((a,b)=>a+b,0);
+const t8=()=>A.q8.reduce((a,b)=>a+b,0)+(A.q8b||0);
+const L9=s=>s<7?['ไม่มีอาการหรือมีน้อยมาก','#22c55e']:s<=12?['ซึมเศร้าระดับน้อย','#eab308']:s<=18?['ซึมเศร้าระดับปานกลาง','#f97316']:['ซึมเศร้าระดับรุนแรง','#ef4444'];
+const L8=s=>s===0?['ไม่มีแนวโน้มฆ่าตัวตายในปัจจุบัน','#22c55e']:s<=8?['แนวโน้มฆ่าตัวตายระดับน้อย','#eab308']:s<=16?['แนวโน้มฆ่าตัวตายระดับปานกลาง','#f97316']:['แนวโน้มฆ่าตัวตายระดับรุนแรง','#ef4444'];
+
+function finish(){
+  const did9=A.q2.some(v=>v===1),did8=did9&&t9()>=7;
+  const r={'วันเวลา':new Date().toLocaleString('th-TH'),'ชื่อ-สกุล':A.info.name,'อายุ':+A.info.age,'เพศ':A.info.gender,'อาชีพ':A.info.job,'เบอร์โทร':A.info.phone,'Q2_1':A.q2[0],'Q2_2':A.q2[1]};
+  Q9.forEach((_,i)=>r['Q9_'+(i+1)]=did9?A.q9[i]:'');
+  r['Q9_รวม']=did9?t9():'';r['Q9_ระดับ']=did9?L9(t9())[0]:'ไม่ถึงเกณฑ์ 2Q';
+  Q8.forEach((_,i)=>r['Q8_'+(i+1)]=did8?A.q8[i]:'');
+  r['Q8_3b']=did8&&A.q8b!==null?A.q8b:'';r['Q8_รวม']=did8?t8():'';r['Q8_ระดับ']=did8?L8(t8())[0]:'ไม่ได้ประเมิน';
+  save(r);
+  const pill=(t,c)=>`<div class="pill" style="background:${c}">${t}</div>`;
+  let h='<h2>บันทึกแบบประเมินเรียบร้อย</h2>';
+  if(!did9)h+=pill('ไม่เป็นโรคซึมเศร้า (2Q ไม่ถึงเกณฑ์)','#22c55e')+'<p>ท่านมีสุขภาพจิตปกติ ดูแลตัวเองและทำแบบประเมินซ้ำได้ทุกเมื่อ</p>';
+  else{const l=L9(t9());h+=`<p class="sub">9Q คะแนนรวม</p><div class="score" style="color:${l[1]}">${t9()}</div>`+pill(l[0],l[1]);
+    if(did8){const m=L8(t8());h+=`<p class="sub">8Q คะแนนรวม</p><div class="score" style="color:${m[1]}">${t8()}</div>`+pill(m[0],m[1]);
+      if(t8()>=17)h+='<div class="alert">คะแนน 8Q ≥ 17 ควรส่งต่อโรงพยาบาลที่มีจิตแพทย์ด่วน<br>สายด่วนสุขภาพจิต 1323 (24 ชั่วโมง)</div>'}
+    else h+='<p>คะแนน 9Q ต่ำกว่า 7 ไม่ต้องประเมิน 8Q</p>'}
+  h+='<p class="note">แบบประเมินนี้เป็นเครื่องมือคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัย หากกังวลควรปรึกษาแพทย์หรือบุคลากรสาธารณสุข</p><button class="btn" onclick="tab(\'D\')">ไปที่ Dashboard</button><button class="btn sec" onclick="tab(\'C\')">ปรึกษาผู้เชี่ยวชาญ</button><button class="btn sec" onclick="newAssess()">ประเมินรายใหม่</button><div style="text-align:left;margin-top:18px;border-top:1px dashed var(--line);padding-top:12px">'+refHtml()+'</div>';
+  $('sr').innerHTML=h;show('sr',4);[...$('steps').children].forEach(e=>e.className='done')}
+
+/* ===== เก็บข้อมูล ===== */
+function local(k='dep_rows'){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return []}}
+function save(r,sh){const k=sh?'dep_'+sh:'dep_rows';try{localStorage.setItem(k,JSON.stringify([...local(k),r]))}catch(e){}
+  if(SCRIPT_URL)fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(sh?{...r,_sheet:sh}:r)}).catch(()=>{})}
+async function load(sh){const k=sh?'dep_'+sh:'dep_rows';let t='ข้อมูลในเครื่องนี้ (ยังไม่ได้เชื่อม Google Sheet)',d;
+  if(SCRIPT_URL){try{d=await (await fetch(SCRIPT_URL+(sh?'?sheet='+encodeURIComponent(sh):''))).json();t='ข้อมูลจาก Google Sheet'}catch(e){t='โหลด Google Sheet ไม่ได้ แสดงข้อมูลในเครื่องนี้'}}
+  $('src').textContent=t;$('src2').textContent=t;return d||local(k)}
+
+/* ===== Dashboard ===== */
+let rows=[],ch={};
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const cnt=(k,vals)=>vals.map(v=>rows.filter(r=>r[k]===v).length);
+function mk(id,cfg){ch[id]&&ch[id].destroy();ch[id]=new Chart($(id),cfg)}
+async function renderDash(){
+  rows=await load();
+  const r9=rows.filter(r=>r['Q9_1']!==''&&r['Q9_1']!==undefined);
+  const n=k=>rows.filter(r=>String(r['Q9_ระดับ']).includes(k)).length;
+  $('kpis').innerHTML=[['ประเมินทั้งหมด',rows.length,'รายการประเมิน'],['ไม่พบอาการ',rows.length-r9.length+n('ไม่มีอาการ'),'2Q ไม่ถึงเกณฑ์ / 9Q < 7'],['มีภาวะซึมเศร้า',n('น้อย')+n('ปานกลาง')+n('รุนแรง'),'9Q ตั้งแต่ 7 คะแนน'],['เสี่ยงฆ่าตัวตายสูง',rows.filter(r=>Number(r['Q8_รวม'])>=17).length,'8Q ตั้งแต่ 17 คะแนน']]
+    .map(k=>`<div class="kpi"><span>${k[0]}</span><b>${k[1]}</b><small>${k[2]}</small></div>`).join('');
+  const av=Q9.map((_,i)=>+avg(r9.map(r=>Number(r['Q9_'+(i+1)]))).toFixed(2));
+  const lbl=Q9.map((t,i)=>(i+1)+'. '+t.slice(0,18)+(t.length>18?'…':''));
+  const pal=['#1d4ed8','#0ea5e9','#6366f1','#14b8a6','#3b82f6','#8b5cf6','#06b6d4','#2563eb','#ec4899'];
+  mk('c1',{type:'bar',data:{labels:[...lbl,'ภาพรวม (เฉลี่ยทุกข้อ)'],datasets:[{data:[...av,+avg(av).toFixed(2)],backgroundColor:[...pal,'#f59e0b'],borderRadius:8}]},options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{min:0,max:3},y:{grid:{display:false}}}}});
+  mk('c2',{type:'doughnut',data:{labels:['ชาย','หญิง','อื่น ๆ'],datasets:[{data:cnt('เพศ',['ชาย','หญิง','อื่น ๆ']),backgroundColor:['#3b82f6','#ec4899','#f59e0b']}]},options:{maintainAspectRatio:false}});
+  const bo={maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}},cl=['#22c55e','#eab308','#f97316','#ef4444'];
+  mk('c3',{type:'bar',data:{labels:['ปกติ','น้อย','ปานกลาง','รุนแรง'],datasets:[{data:cnt('Q9_ระดับ',['ไม่มีอาการหรือมีน้อยมาก','ซึมเศร้าระดับน้อย','ซึมเศร้าระดับปานกลาง','ซึมเศร้าระดับรุนแรง']),backgroundColor:cl,borderRadius:8}]},options:bo});
+  mk('c4',{type:'bar',data:{labels:['ไม่มี','น้อย (1–8)','ปานกลาง (9–16)','รุนแรง (≥17)'],datasets:[{data:cnt('Q8_ระดับ',['ไม่มีแนวโน้มฆ่าตัวตายในปัจจุบัน','แนวโน้มฆ่าตัวตายระดับน้อย','แนวโน้มฆ่าตัวตายระดับปานกลาง','แนวโน้มฆ่าตัวตายระดับรุนแรง']),backgroundColor:cl,borderRadius:8}]},options:bo});
+}
+
+/* ===== รายชื่อ + Excel (เฉพาะ admin) ===== */
+async function renderList(){
+  if(!isAdmin)return;rows=await load();const cs=await load('ข้อความปรึกษา');
+  $('tbl2').innerHTML=cs.length?'<table><tr><th>วันเวลา</th><th>ชื่อ</th><th>ช่องทางติดต่อ</th><th>ข้อความ</th></tr>'+cs.slice().reverse().map(r=>`<tr><td>${esc(r['วันเวลา'])}</td><td>${esc(r['ชื่อ'])}</td><td>${esc(r['ช่องทางติดต่อ'])}</td><td>${esc(r['ข้อความ'])}</td></tr>`).join('')+'</table>':'<p class="sub">ยังไม่มีข้อความ</p>';
+  $('tbl').innerHTML=rows.length?'<table><tr><th>วันเวลา</th><th>ชื่อ-สกุล</th><th>อายุ</th><th>เพศ</th><th>อาชีพ</th><th>เบอร์โทร</th><th>9Q</th><th>8Q</th></tr>'+
+    rows.slice().reverse().map(r=>`<tr><td>${esc(r['วันเวลา'])}</td><td>${esc(r['ชื่อ-สกุล'])}</td><td>${esc(r['อายุ'])}</td><td>${esc(r['เพศ'])}</td><td>${esc(r['อาชีพ'])}</td><td>${esc(r['เบอร์โทร'])}</td><td>${esc(r['Q9_รวม'])} ${esc(r['Q9_ระดับ'])}</td><td>${esc(r['Q8_รวม'])} ${esc(r['Q8_ระดับ']==='ไม่ได้ประเมิน'?'':r['Q8_ระดับ'])}</td></tr>`).join('')+'</table>':'<p class="sub">ยังไม่มีข้อมูล</p>'}
+const CONSULT={line:''}; /* ใส่ลิงก์ LINE Official ของผู้เชี่ยวชาญ เช่น https://line.me/R/ti/p/@xxxx */
+if(CONSULT.line){$('lineBtn').href=CONSULT.line;$('lineBtn').classList.remove('hide')}
+function sendConsult(){const m=$('cm').value.trim(),c=$('cc').value.trim();
+  if(!m||!c){$('ce').textContent='กรุณากรอกช่องทางติดต่อกลับและข้อความ';return}
+  save({'วันเวลา':new Date().toLocaleString('th-TH'),'ชื่อ':$('cn').value.trim(),'ช่องทางติดต่อ':c,'ข้อความ':m},'ข้อความปรึกษา');
+  ['cn','cc','cm'].forEach(k=>$(k).value='');$('ce').textContent='';alert('ส่งข้อความแล้ว เจ้าหน้าที่จะติดต่อกลับ หากเร่งด่วนโทร 1323')}
+function exportXlsx(){
+  if(!isAdmin)return;if(!rows.length){alert('ยังไม่มีข้อมูลให้ส่งออก');return}
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'ผลการประเมิน');
+  const r9=rows.filter(r=>r['Q9_1']!==''&&r['Q9_1']!==undefined);
+  const s=Q9.map((t,i)=>({'ข้อ':i+1,'คำถาม':t,'ค่าเฉลี่ย':+avg(r9.map(r=>Number(r['Q9_'+(i+1)]))).toFixed(2)}));
+  s.push({'ข้อ':'','คำถาม':'ภาพรวม (เฉลี่ยทุกข้อ)','ค่าเฉลี่ย':+avg(s.map(x=>x['ค่าเฉลี่ย'])).toFixed(2)});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(s),'ค่าเฉลี่ย 9Q');
+  const fn='depression-screening-'+new Date().toISOString().slice(0,10)+'.xlsx';
+  (async()=>{try{const d=await claude.use('downloads');if(!d){alert('ไม่สามารถดาวน์โหลดไฟล์ในมุมมองนี้ได้');return}
+    const buf=XLSX.write(wb,{bookType:'xlsx',type:'array'});await d.save({filename:fn,data:new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})})}catch(e){if(!e||e.code!=='declined')alert('ส่งออกไม่สำเร็จ')}})()}
+tab('H');
+</script>
+</body>
+</html>
