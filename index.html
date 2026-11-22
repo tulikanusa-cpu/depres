@@ -59,33 +59,46 @@ th{background:var(--soft);color:var(--p);text-align:left}th,td{padding:9px 10px;
 .hide{display:none!important}.note{font-size:.85rem;color:var(--mut)}
 ol.ref{padding-left:20px;font-size:.92rem;margin:6px 0}ol.ref li{margin-bottom:8px}
 @media(max-width:520px){.grid{grid-template-columns:1fr}.opt .c{width:48px;height:48px}.tb{margin-left:0;width:100%}.tb .pillb{flex:1}}
+
+/* ===== สีสันเพิ่มเติม ===== */
+body{background:radial-gradient(900px 420px at 100% -10%,#c7d2fe66,transparent),radial-gradient(800px 400px at -10% 10%,#a5f3fc66,transparent),var(--bg)}
+.logo{background:linear-gradient(135deg,#2563eb,#06b6d4 55%,#a855f7)}
+.top h1 span{background:linear-gradient(90deg,#06b6d4,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero{background:linear-gradient(125deg,#1d4ed8,#0ea5e9 45%,#8b5cf6 80%,#ec4899);box-shadow:0 14px 30px rgba(99,102,241,.3)}
+nav button.on{background:linear-gradient(90deg,#2563eb,#06b6d4);color:#fff}
+.card{border-top:5px solid #3b82f6}
+#s2.card{border-top-color:#06b6d4}#s9.card{border-top-color:#8b5cf6}#s8.card{border-top-color:#ec4899}#sr.card{border-top-color:#22c55e}
+#C .card:nth-child(1){border-top-color:#14b8a6}#C .card:nth-child(2){border-top-color:#f59e0b}#G .card{border-top-color:#6366f1}
+.btn{background:linear-gradient(90deg,#2563eb,#06b6d4)}
+#s9 .btn{background:linear-gradient(90deg,#7c3aed,#3b82f6)}#s8 .btn{background:linear-gradient(90deg,#ec4899,#8b5cf6)}
+h2{background:none}
+.steps span.on{background:linear-gradient(90deg,#2563eb,#8b5cf6)}.steps span.done{background:linear-gradient(90deg,#06b6d4,#14b8a6)}
+.kpi{border:0;color:#fff;box-shadow:0 10px 22px rgba(0,0,0,.12)}.kpi span,.kpi small{color:#ffffffd9}
+.kpi:nth-child(1){background:linear-gradient(135deg,#2563eb,#06b6d4)}.kpi:nth-child(2){background:linear-gradient(135deg,#10b981,#84cc16)}
+.kpi:nth-child(3){background:linear-gradient(135deg,#f59e0b,#f97316)}.kpi:nth-child(4){background:linear-gradient(135deg,#ef4444,#ec4899)}
+th{background:linear-gradient(90deg,#dbeafe,#ede9fe);color:#3730a3}
+.pillb.main{background:linear-gradient(90deg,#2563eb,#8b5cf6);border:0}
 </style>
 </head>
 <body>
 <div class="top">
   <div class="logo">+</div>
   <div><h1>DEPRESSION <span>/ 2Q · 9Q · 8Q</span></h1><p>ระบบคัดกรองภาวะซึมเศร้าและความเสี่ยงฆ่าตัวตาย</p></div>
-  <div class="tb"><button class="pillb" id="lgBtn" onclick="tab('H')">เข้าสู่ระบบ</button><button class="pillb main" onclick="newAssess()">+ ประเมินรายใหม่</button></div>
+  <div class="tb"><button class="pillb" id="lgBtn" onclick="tab('G')">เข้าสู่ระบบ</button><button class="pillb main" onclick="newAssess()">+ ประเมินรายใหม่</button></div>
 </div>
 <nav>
   <button id="tH" class="on" onclick="tab('H')">หน้าแรก</button>
   <button id="tA" onclick="newAssess()">แบบประเมิน</button>
   <button id="tD" onclick="tab('D')">Dashboard</button>
-  <button id="tL" class="hide" onclick="tab('L')">รายชื่อ/ความคิดเห็น</button>
   <button id="tC" onclick="tab('C')">ปรึกษาผู้เชี่ยวชาญ</button>
   <button id="tR" onclick="tab('R')">อ้างอิง</button>
+  <button id="tL" class="hide" onclick="tab('L')">รายชื่อ/ความคิดเห็น</button>
+  <button id="tG" onclick="tab('G')">เข้าสู่ระบบ</button>
 </nav>
 <main>
 <!-- หน้าแรก -->
 <section id="H">
   <div class="hero"><h2>คัดกรองภาวะซึมเศร้า</h2><p>ทำตามลำดับ 2Q → 9Q → 8Q ใช้เวลาไม่กี่นาที ผลแสดงทันที</p><button class="pillb" onclick="newAssess()">เริ่มทำแบบประเมิน</button> <button class="pillb" onclick="tab('D')" style="background:rgba(255,255,255,.2);color:#fff">ดู Dashboard</button></div>
-  <div class="card" id="loginCard">
-    <h2>เข้าสู่ระบบผู้ดูแล</h2><p class="sub">สำหรับดูรายชื่อ ความคิดเห็น และส่งออก Excel</p>
-    <label class="f">ชื่อผู้ใช้<input type="text" id="lu" autocomplete="off" autocapitalize="none"></label>
-    <label class="f">รหัสผ่าน<input type="password" id="lp" autocomplete="off"></label>
-    <div class="err" id="le"></div><button class="btn" onclick="login()">เข้าสู่ระบบ</button>
-  </div>
-  <div class="card hide" id="adminCard"><h2>เข้าสู่ระบบแล้ว</h2><p class="sub">คุณเป็นผู้ดูแลระบบ</p><button class="btn" onclick="tab('L')">ดูรายชื่อและความคิดเห็น</button><button class="btn sec" onclick="logout()">ออกจากระบบ</button></div>
 </section>
 
 <!-- ทำแบบประเมิน -->
@@ -126,6 +139,17 @@ ol.ref{padding-left:20px;font-size:.92rem;margin:6px 0}ol.ref li{margin-bottom:8
   <div class="bar"><div><h2>รายชื่อและความคิดเห็น</h2><span class="note" id="src2"></span></div><button class="pillb main" onclick="exportXlsx()">ส่งออก Excel</button></div>
   <div class="card tw" id="tbl"></div>
   <h2>ข้อความปรึกษาผู้เชี่ยวชาญ</h2><div class="card tw" id="tbl2"></div>
+</section>
+
+<!-- เข้าสู่ระบบ (หน้าสุดท้าย) -->
+<section id="G" class="hide">
+  <div class="card" id="loginCard">
+    <h2>เข้าสู่ระบบผู้ดูแล</h2><p class="sub">สำหรับดูรายชื่อ ความคิดเห็น และส่งออก Excel</p>
+    <label class="f">ชื่อผู้ใช้<input type="text" id="lu" autocomplete="off" autocapitalize="none"></label>
+    <label class="f">รหัสผ่าน<input type="password" id="lp" autocomplete="off"></label>
+    <div class="err" id="le"></div><button class="btn" onclick="login()">เข้าสู่ระบบ</button>
+  </div>
+  <div class="card hide" id="adminCard"><h2>เข้าสู่ระบบแล้ว</h2><p class="sub">คุณเป็นผู้ดูแลระบบ</p><button class="btn" onclick="tab('L')">ดูรายชื่อและความคิดเห็น</button><button class="btn sec" onclick="logout()">ออกจากระบบ</button></div>
 </section>
 
 <!-- ปรึกษาผู้เชี่ยวชาญ -->
@@ -180,14 +204,14 @@ $('q8').innerHTML=Q8.map(([t,sc],i)=>{
   return h}).join('');
 
 /* ===== นำทาง / Login ===== */
-function tab(x){if(x==='L'&&!isAdmin)x='H';
-  ['H','A','D','L','C','R'].forEach(k=>{$(k).classList.toggle('hide',k!==x);$('t'+k).classList.toggle('on',k===x)});
-  $('lgBtn').textContent=isAdmin?'ออกจากระบบ':'เข้าสู่ระบบ';$('lgBtn').onclick=isAdmin?logout:()=>tab('H');
+function tab(x){if(x==='L'&&!isAdmin)x='G';
+  ['H','A','D','L','C','R','G'].forEach(k=>{$(k).classList.toggle('hide',k!==x);$('t'+k).classList.toggle('on',k===x)});
+  $('lgBtn').textContent=isAdmin?'ออกจากระบบ':'เข้าสู่ระบบ';$('lgBtn').onclick=isAdmin?logout:()=>tab('G');
   $('tL').classList.toggle('hide',!isAdmin);$('loginCard').classList.toggle('hide',isAdmin);$('adminCard').classList.toggle('hide',!isAdmin);
   if(x==='D')renderDash();if(x==='L')renderList();scrollTo({top:0})}
 function login(){if($('lu').value.trim()===ADMIN.u&&$('lp').value===ADMIN.p){isAdmin=true;try{sessionStorage.setItem('adm','1')}catch(e){}
-  $('lu').value=$('lp').value='';$('le').textContent='';tab('H')}else $('le').textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'}
-function logout(){isAdmin=false;try{sessionStorage.removeItem('adm')}catch(e){}tab('H')}
+  $('lu').value=$('lp').value='';$('le').textContent='';tab('L')}else $('le').textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'}
+function logout(){isAdmin=false;try{sessionStorage.removeItem('adm')}catch(e){}tab('G')}
 function newAssess(){location.hash='';A.q2=[null,null];A.q9.fill(null);A.q8.fill(null);A.q8b=null;
   document.querySelectorAll('.opt.on').forEach(b=>b.classList.remove('on'));$('q8b').classList.add('hide');
   ['name','age','gender','job','phone'].forEach(k=>$(k).value='');tab('A');show('s0',0)}
@@ -277,9 +301,7 @@ function exportXlsx(){
   const s=Q9.map((t,i)=>({'ข้อ':i+1,'คำถาม':t,'ค่าเฉลี่ย':+avg(r9.map(r=>Number(r['Q9_'+(i+1)]))).toFixed(2)}));
   s.push({'ข้อ':'','คำถาม':'ภาพรวม (เฉลี่ยทุกข้อ)','ค่าเฉลี่ย':+avg(s.map(x=>x['ค่าเฉลี่ย'])).toFixed(2)});
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(s),'ค่าเฉลี่ย 9Q');
-  const fn='depression-screening-'+new Date().toISOString().slice(0,10)+'.xlsx';
-  (async()=>{try{const d=await claude.use('downloads');if(!d){alert('ไม่สามารถดาวน์โหลดไฟล์ในมุมมองนี้ได้');return}
-    const buf=XLSX.write(wb,{bookType:'xlsx',type:'array'});await d.save({filename:fn,data:new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})})}catch(e){if(!e||e.code!=='declined')alert('ส่งออกไม่สำเร็จ')}})()}
+  XLSX.writeFile(wb,'depression-screening-'+new Date().toISOString().slice(0,10)+'.xlsx')}
 tab('H');
 </script>
 </body>
